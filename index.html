@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <title>Connexion / Inscription</title>
-  <script src="https://unpkg.com/@supabase/supabase-js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.5.2/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.5.2/firebase-auth.js"></script>
   <style>
     body {
       margin: 0;
@@ -66,10 +67,6 @@
       cursor: pointer;
     }
 
-    .hidden {
-      display: none;
-    }
-
     .message {
       text-align: center;
       margin-bottom: 1em;
@@ -95,9 +92,19 @@
   </div>
 
   <script>
-    const SUPABASE_URL = 'https://nhnyotgbyzkbzagvtwqy.supabase.co';
-    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5obnlvdGdieXprYnphZ3Z0d3F5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTcxMTYzNDEsImV4cCI6MjA3MjY5MjM0MX0.FECDiVL9ZCCj5CRZTpLNIc9GqDgv6JJOD0WKr_0aUtw';
-    const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    // Firebase config
+    const firebaseConfig = {
+      apiKey: "AIzaSyA6bJC7Qgmt7SZYjIObL1fJ72hOMEUwTWw",
+      authDomain: "kybrakevelup.firebaseapp.com",
+      projectId: "kybrakevelup",
+      storageBucket: "kybrakevelup.firebasestorage.app",
+      messagingSenderId: "776341170519",
+      appId: "1:776341170519:web:24d5e44ff778abcef17612"
+    };
+
+    // Init Firebase
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
 
     let isLogin = true;
 
@@ -119,22 +126,18 @@
       const email = document.getElementById('email').value;
       const password = document.getElementById('password').value;
 
-      if (isLogin) {
-        const { error } = await supabase.auth.signInWithPassword({ email, password });
-        if (error) {
-          messageBox.textContent = 'Erreur : ' + error.message;
-        } else {
+      try {
+        if (isLogin) {
+          await auth.signInWithEmailAndPassword(email, password);
           window.location.href = 'dashboard.html';
-        }
-      } else {
-        const { error } = await supabase.auth.signUp({ email, password });
-        if (error) {
-          messageBox.textContent = 'Erreur : ' + error.message;
         } else {
+          await auth.createUserWithEmailAndPassword(email, password);
           messageBox.textContent = 'Inscription réussie ! Vérifie ton email.';
         }
+      } catch (error) {
+        messageBox.textContent = 'Erreur : ' + error.message;
       }
     });
   </script>
 </body>
-  </html>
+</html>
