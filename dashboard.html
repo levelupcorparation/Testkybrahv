@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <title>Dashboard</title>
+  <script src="https://unpkg.com/@supabase/supabase-js"></script>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #1c1c1c, #2e2e2e);
+      color: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .dashboard {
+      background: #2a2a2a;
+      padding: 2em;
+      border-radius: 12px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.5);
+      width: 100%;
+      max-width: 400px;
+      text-align: center;
+    }
+
+    h1 {
+      margin-bottom: 0.5em;
+      font-weight: 500;
+    }
+
+    p {
+      font-size: 1.1em;
+      margin-bottom: 2em;
+      color: #00c9a7;
+    }
+
+    button {
+      padding: 0.8em 1.2em;
+      background: #ff4b5c;
+      border: none;
+      border-radius: 6px;
+      color: #fff;
+      font-size: 1em;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    button:hover {
+      background: #e04352;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="dashboard">
+    <h1>Bienvenue 👋</h1>
+    <p id="user-email">Chargement...</p>
+    <button id="logout">Se déconnecter</button>
+  </div>
+
+  <script>
+    const SUPABASE_URL = 'https://nhnyotgbyzkbzagvtwqy.supabase.co';
+    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5obnlvdGdieXprYnphZ3Z0d3F5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTcxMTYzNDEsImV4cCI6MjA3MjY5MjM0MX0.FECDiVL9ZCCj5CRZTpLNIc9GqDgv6JJOD0WKr_0aUtw';
+    const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    // Vérifie la session
+    async function loadUser() {
+      const { data: { session }, error } = await supabase.auth.getSession();
+      if (!session || error) {
+        window.location.href = 'index.html';
+      } else {
+        document.getElementById('user-email').textContent = session.user.email;
+      }
+    }
+
+    loadUser();
+
+    // Déconnexion
+    document.getElementById('logout').addEventListener('click', async () => {
+      await supabase.auth.signOut();
+      window.location.href = 'index.html';
+    });
+  </script>
+</body>
+</html>
