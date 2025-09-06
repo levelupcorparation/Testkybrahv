@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <title>Connexion / Inscription</title>
+  <script src="https://unpkg.com/@supabase/supabase-js"></script>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+      color: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .auth-container {
+      background: #1e2a38;
+      padding: 2em;
+      border-radius: 12px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.4);
+      width: 100%;
+      max-width: 400px;
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 1em;
+      font-weight: 500;
+    }
+
+    input {
+      width: 100%;
+      padding: 0.8em;
+      margin-bottom: 1em;
+      border: none;
+      border-radius: 6px;
+      background: #2f3e4d;
+      color: #fff;
+      font-size: 1em;
+    }
+
+    button {
+      width: 100%;
+      padding: 0.8em;
+      background: #00c9a7;
+      border: none;
+      border-radius: 6px;
+      color: #fff;
+      font-size: 1em;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    button:hover {
+      background: #00b49c;
+    }
+
+    .switch-mode {
+      text-align: center;
+      margin-top: 1em;
+      font-size: 0.9em;
+      color: #ccc;
+      cursor: pointer;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .message {
+      text-align: center;
+      margin-bottom: 1em;
+      font-size: 0.95em;
+      color: #00c9a7;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="auth-container">
+    <h2 id="form-title">Connexion</h2>
+
+    <div class="message" id="message"></div>
+
+    <form id="auth-form">
+      <input type="email" id="email" placeholder="Adresse email" required />
+      <input type="password" id="password" placeholder="Mot de passe" required />
+      <button type="submit" id="submit-btn">Se connecter</button>
+    </form>
+
+    <div class="switch-mode" id="toggle-mode">Pas encore inscrit ? Crée un compte</div>
+  </div>
+
+  <script>
+    const SUPABASE_URL = 'https://nhnyotgbyzkbzagvtwqy.supabase.co';
+    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5obnlvdGdieXprYnphZ3Z0d3F5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTcxMTYzNDEsImV4cCI6MjA3MjY5MjM0MX0.FECDiVL9ZCCj5CRZTpLNIc9GqDgv6JJOD0WKr_0aUtw';
+    const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    let isLogin = true;
+
+    const formTitle = document.getElementById('form-title');
+    const submitBtn = document.getElementById('submit-btn');
+    const toggleMode = document.getElementById('toggle-mode');
+    const messageBox = document.getElementById('message');
+
+    toggleMode.addEventListener('click', () => {
+      isLogin = !isLogin;
+      formTitle.textContent = isLogin ? 'Connexion' : 'Inscription';
+      submitBtn.textContent = isLogin ? 'Se connecter' : 'S’inscrire';
+      toggleMode.textContent = isLogin ? 'Pas encore inscrit ? Crée un compte' : 'Déjà inscrit ? Se connecter';
+      messageBox.textContent = '';
+    });
+
+    document.getElementById('auth-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+
+      if (isLogin) {
+        const { error } = await supabase.auth.signInWithPassword({ email, password });
+        if (error) {
+          messageBox.textContent = 'Erreur : ' + error.message;
+        } else {
+          window.location.href = 'dashboard.html';
+        }
+      } else {
+        const { error } = await supabase.auth.signUp({ email, password });
+        if (error) {
+          messageBox.textContent = 'Erreur : ' + error.message;
+        } else {
+          messageBox.textContent = 'Inscription réussie ! Vérifie ton email.';
+        }
+      }
+    });
+  </script>
+</body>
+  </html>
