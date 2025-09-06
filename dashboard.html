@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <title>Dashboard</title>
-  <script src="https://unpkg.com/@supabase/supabase-js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.5.2/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.5.2/firebase-auth.js"></script>
   <style>
     body {
       margin: 0;
@@ -62,25 +63,28 @@
   </div>
 
   <script>
-    const SUPABASE_URL = 'https://nhnyotgbyzkbzagvtwqy.supabase.co';
-    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5obnlvdGdieXprYnphZ3Z0d3F5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTcxMTYzNDEsImV4cCI6MjA3MjY5MjM0MX0.FECDiVL9ZCCj5CRZTpLNIc9GqDgv6JJOD0WKr_0aUtw';
-    const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    const firebaseConfig = {
+      apiKey: "AIzaSyA6bJC7Qgmt7SZYjIObL1fJ72hOMEUwTWw",
+      authDomain: "kybrakevelup.firebaseapp.com",
+      projectId: "kybrakevelup",
+      storageBucket: "kybrakevelup.firebasestorage.app",
+      messagingSenderId: "776341170519",
+      appId: "1:776341170519:web:24d5e44ff778abcef17612"
+    };
 
-    // Vérifie la session
-    async function loadUser() {
-      const { data: { session }, error } = await supabase.auth.getSession();
-      if (!session || error) {
-        window.location.href = 'index.html';
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+
+    auth.onAuthStateChanged(user => {
+      if (user) {
+        document.getElementById('user-email').textContent = user.email;
       } else {
-        document.getElementById('user-email').textContent = session.user.email;
+        window.location.href = 'index.html';
       }
-    }
+    });
 
-    loadUser();
-
-    // Déconnexion
     document.getElementById('logout').addEventListener('click', async () => {
-      await supabase.auth.signOut();
+      await auth.signOut();
       window.location.href = 'index.html';
     });
   </script>
