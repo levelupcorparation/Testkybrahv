@@ -2,9 +2,8 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8" />
-  <title>Connexion / Inscription</title>
-  <script src="https://www.gstatic.com/firebasejs/10.5.2/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.5.2/firebase-auth.js"></script>
+  <title>Kybra Auth</title>
+  <script type="module" src="./auth.js" defer></script>
   <style>
     body {
       margin: 0;
@@ -76,68 +75,15 @@
   </style>
 </head>
 <body>
-
   <div class="auth-container">
     <h2 id="form-title">Connexion</h2>
-
     <div class="message" id="message"></div>
-
     <form id="auth-form">
       <input type="email" id="email" placeholder="Adresse email" required />
       <input type="password" id="password" placeholder="Mot de passe" required />
       <button type="submit" id="submit-btn">Se connecter</button>
     </form>
-
     <div class="switch-mode" id="toggle-mode">Pas encore inscrit ? Crée un compte</div>
   </div>
-
-  <script>
-    // Firebase config
-    const firebaseConfig = {
-      apiKey: "AIzaSyA6bJC7Qgmt7SZYjIObL1fJ72hOMEUwTWw",
-      authDomain: "kybrakevelup.firebaseapp.com",
-      projectId: "kybrakevelup",
-      storageBucket: "kybrakevelup.firebasestorage.app",
-      messagingSenderId: "776341170519",
-      appId: "1:776341170519:web:24d5e44ff778abcef17612"
-    };
-
-    // Init Firebase
-    firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
-
-    let isLogin = true;
-
-    const formTitle = document.getElementById('form-title');
-    const submitBtn = document.getElementById('submit-btn');
-    const toggleMode = document.getElementById('toggle-mode');
-    const messageBox = document.getElementById('message');
-
-    toggleMode.addEventListener('click', () => {
-      isLogin = !isLogin;
-      formTitle.textContent = isLogin ? 'Connexion' : 'Inscription';
-      submitBtn.textContent = isLogin ? 'Se connecter' : 'S’inscrire';
-      toggleMode.textContent = isLogin ? 'Pas encore inscrit ? Crée un compte' : 'Déjà inscrit ? Se connecter';
-      messageBox.textContent = '';
-    });
-
-    document.getElementById('auth-form').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const email = document.getElementById('email').value;
-      const password = document.getElementById('password').value;
-
-      try {
-        if (isLogin) {
-          await auth.signInWithEmailAndPassword(email, password);
-          window.location.href = 'dashboard.html';
-        } else {
-          await auth.createUserWithEmailAndPassword(email, password);
-          messageBox.textContent = 'Inscription réussie ! Vérifie ton email.';
-        }
-      } catch (error) {
-        messageBox.textContent = 'Erreur : ' + error.message;
-      }
-    });
-  </script>
 </body>
 </html>
